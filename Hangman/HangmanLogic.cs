@@ -8,9 +8,6 @@ namespace Hangman
 {
     internal class HangmanLogic
     {
-        public void Test()
-        {
-            Console.WriteLine("Git Test");
-        }
+      
     }
 }

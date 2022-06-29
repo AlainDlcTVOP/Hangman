@@ -9,19 +9,20 @@ namespace Hangman
     {
         static void Main(string[] args)
         {
-            
-          
+           
+
             string downloadedString;
             WebClient client;
 
 
             string input, answer;
             char guessedChar;
-            int numberOfGuesses = 10;
+            int guessesLeft = 10;
 
 
+            // api random animal 
             client = new WebClient();
-            downloadedString = client.DownloadString("https://random-word-api.herokuapp.com/word");
+            downloadedString = client.DownloadString("https://random-word-form.herokuapp.com/random/animal");
             string randomWord = downloadedString;
 
             char[] charsToTrim = { '[', '"', '"', ']' };
@@ -30,10 +31,10 @@ namespace Hangman
 
             string formatedString = text.Trim(charsToTrim);
 
-            Console.WriteLine("After trim: " + formatedString);
+          
 
 
-            List<string> guessedList = new List<string>();
+            List<string> savedList = new List<string>();
             string[] secretWord = new string[] { formatedString };
 
             secretWord = Array.ConvertAll(secretWord, w => w.ToLower());
@@ -47,46 +48,46 @@ namespace Hangman
 
 
             char[] answerAsCharArray = answer.ToCharArray();
-            char[] answerDisplay = new char[answerAsCharArray.Length];
+            char[] view = new char[answerAsCharArray.Length];
 
             for (int i = 0; i < answerAsCharArray.Length; i++)
             {
-                answerDisplay[i] = '_';
+                view[i] = '_';
 
             }
 
+          
 
+            StringBuilder charList = new StringBuilder(15);
 
-            StringBuilder guessedLetters = new StringBuilder(15);
-
-            while (numberOfGuesses > 0)
+            while (guessesLeft > 0)
             {
-               
+                Console.ForegroundColor = ConsoleColor.Yellow;
 
-                string checkAnswer = new string(answerDisplay);
+                string checkAnswer = new string(view);
                 if (checkAnswer == answer)
                 {
                     WriteLine("You Win!");
-                    numberOfGuesses = 0;
+                    guessesLeft = 0;
+                   
                     break;
                 }
                 else
                 {
-                    Console.ResetColor();
-
-
-                    WriteLine("Guess the word!");
-
-                    WriteLine(answerDisplay);
-                    WriteLine(formatedString);
-                    WriteLine(guessedLetters);
-                    WriteLine($"Guesses left:{numberOfGuesses}\n1. Guess a letter.\n2. Solve word");
+                  
+                    WriteLine("Guess the animal!");
+                    WriteLine(view);
+                    WriteLine(charList);
+                    WriteLine($"Guesses left:{guessesLeft}\n1. Guess a letter.\n2. Solve word");
+                    
+                   
                     input = ReadLine();
+                  
                     switch (input)
                     {
 
                         case "1":
-                            numberOfGuesses--;
+                            guessesLeft--;
                             WriteLine("Guess a letter: ");
                             input = ReadLine();
                             guessedChar = char.Parse(input);
@@ -94,22 +95,25 @@ namespace Hangman
                             {
                                 if (guessedChar == answerAsCharArray[j])
                                 {
-                                    answerDisplay[j] = guessedChar;
+                                    view[j] = guessedChar;
                                 }
 
                             }
-                            if (guessedList.Contains(input) == true)
+                            if (savedList.Contains(input) == true)
                             {
-                                numberOfGuesses++;
+                               
+                                guessesLeft++;
                             }
                             else
                             {
-                                guessedList.Add(input);
+                                savedList.Add(input);
+                               
+                               
                             }
-                            guessedLetters.Append(guessedChar);
+                            charList.Append(guessedChar);
+
+                            WriteLine($" letter that have been {charList}");
                             break;
-
-
 
                         case "2":
                             input = ReadLine();
@@ -117,27 +121,33 @@ namespace Hangman
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 WriteLine("You Win!");
-                                numberOfGuesses = 0;
+                                guessesLeft = 0;
                                 break;
                             }
                             else
                             {
-                                numberOfGuesses--;
+                                guessesLeft--;
+                               
                             }
+
+                          
                             break;
 
                         default:
                             Console.ForegroundColor = ConsoleColor.Red;
                             WriteLine("Invalid choice, try again...");
+                            Console.ResetColor();
                             ReadLine();
-                              Clear();
+                            Clear();
                             break;
                     }
                 }
+
+               
             }
-        
-           
-            ReadLine();
+          
+          ReadLine();
+          WriteLine($" The Correct answer is {formatedString}!");
         }
        
     }
